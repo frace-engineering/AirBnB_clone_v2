@@ -5,31 +5,16 @@ sudo apt-get update
 sudo apt-get install -y nginx
 
 sudo mkdir -p /data/web_static/shared/
-sudo mkdir -p /data/web_static/releases/test
+sudo mkdir -p /data/web_static/releases/test/
+fake_file=" /data/web_static/releases/test/index.html"
+echo -e "<html>\n\t<head>\n\t</head>\n\t<body>\n\t\tHolbertonSchool\n\t</body>\n<\html>" | sudo tee $fake_file > /dev/null
 
-echo "!DOCTYPE html>
-<html>
-	<head>
-	</head>
-	<body>
-		<p>Holberton School</p>
-	</body>
-</html>
-" | tee /data/web_static/releases/test/index.html > /dev/null
-
-sudo ln -s /data/web_static/releases/test/ /data/web_static/current
+sudo ln -sf /data/web_static/releases/test/ /data/web_static/current
 sudo chown -R ubuntu:ubuntu /data/
 
-echo "
-server {
-	listen 80;
-	server_name $HOSTNAME;
 
-	location /hbnb_static {
-		alias /data/web_static/current;
-	}
-}
-" | tee -a /etc/nginx/sites-available/default > /dev/null
+config_file=/etc/nginx/sites-available/default
+sed -i '55a \ \tlocation /hbnb_static/ {\n\t\talias /data/web_static/current/;\n\t}\n' $config_file
 
 sudo nginx -t
 sudo service nginx restart
