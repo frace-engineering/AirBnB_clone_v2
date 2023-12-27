@@ -11,5 +11,5 @@ def hello_hbnb():
 
 
 if __name__ == "__main__":
-    ""' Run the app on port 5000 and all host """
+    """ Run the app on port 5000 and all host """
     app.run(host='0.0.0.0', port=5000)
