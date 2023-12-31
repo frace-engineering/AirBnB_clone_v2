@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from os import getenv
@@ -5,10 +6,12 @@ from models.base_model import Base
 
 
 class DBStorage:
+    """Define the DBStorage class"""
     __engine = None
     __session = None
 
     def __init__(self):
+        """Create the storage engine"""
         user = getenv("HBNB_MYSQL_USER")
         pwd = getenv("HBNB_MYSQL_PWD")
         host = getenv("hbnb_mysql_host")
@@ -22,6 +25,7 @@ class DBStorage:
                                         expire_on_commit=False))
 
     def all(self, cls=None):
+        """Public method that returns dictionary of objects"""
         objects_dict = {}
         if cls:
             objects = self.__session.query(cls).all()
