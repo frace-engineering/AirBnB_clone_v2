@@ -30,34 +30,24 @@ class DBStorage:
         self.__session = scoped_session(sessionmaker(bind=self.__engine,
                                         expire_on_commit=False))
 
-        def classes(self):
-            """Return dict of classes"""
-            return {
-                    "BaseModel": BaseModel,
-                    "City": City,
-                    "Place": Place,
-                    "Amenity": Amenity,
-                    "State": State,
-                    "User": User,
-                    "Review": Review
-                    }
-
     def all(self, cls=None):
         """Public method that returns dictionary of objects"""
+        objects_dict = {}
         if cls:
-            objects = self.__session.query(self.classes()[cls])
+            objects = self.__session.query(cls).all()
         else:
+            classes = [User, State, City, Amenity, Place, Review]
             objects = []
             for c in classes:
-                objects.extends(self.__session.query(c).all())
+                objects.extend(self.__session.query(c).all())
         for obj in objects:
             key = "{}.{}".format(type(obj).__name__, obj.id)
-            objects[key] = obj
+            objects_dict[key] = obj
         return objects_dict
 
     def new(self, obj):
         """Add the session to the object """
-        self.__sesson.add(obj)
+        self.__session.add(obj)
 
     def save(self):
         """Commit all changes to the current database """
@@ -77,4 +67,4 @@ class DBStorage:
 
     def close(self):
         """ Call remove() on the __session """
-        self.__session.close()
+        self.__session.remove()

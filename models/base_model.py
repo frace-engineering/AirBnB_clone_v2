@@ -28,7 +28,11 @@ class BaseModel:
                                                      '%Y-%m-%dT%H:%M:%S.%f')
             kwargs['created_at'] = datetime.strptime(kwargs['created_at'],
                                                      '%Y-%m-%dT%H:%M:%S.%f')
-            del kwargs['__class__']
+            if 'id' not in kwargs.key():
+                kwargs['id'] = str(uuid.uuid())
+            if hasattr(kwargs, '__class__'):
+                #del kwargs['__class__']
+                pass
             self.__dict__.update(kwargs)
 
     def __str__(self):
@@ -51,4 +55,10 @@ class BaseModel:
                           (str(type(self)).split('.')[-1]).split('\'')[0]})
         dictionary['created_at'] = self.created_at.isoformat()
         dictionary['updated_at'] = self.updated_at.isoformat()
+        if '_sa_instance_state' in dictionary.key():
+            del dictionary['_sa_instance_state']
         return dictionary
+
+    def delete(self):
+        """ delete the current instance from the storage """
+        models.storage.delete(self)
