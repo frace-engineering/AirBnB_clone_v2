@@ -2,7 +2,13 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from os import getenv
-from models.base_model import Base
+from models.base_model import BaseModel, Base
+from models.user import User
+from models.state import State
+from models.city import City
+from models.review import Review
+from models.amenity import Amenity
+from models.place import Place
 
 
 class DBStorage:
@@ -14,9 +20,9 @@ class DBStorage:
         """Create the storage engine"""
         user = getenv("HBNB_MYSQL_USER")
         pwd = getenv("HBNB_MYSQL_PWD")
-        host = getenv("hbnb_mysql_host")
+        host = getenv("HBNB_MYSQL_HOST")
         db = getenv("HBNB_MYSQL_DB")
-        db_path = f'mysql+mysqldb://{user}:{pwd)}@{host)}/{db}'
+        db_path = f'mysql+mysqldb://{user}:{pwd}@{host}/{db}'
         self.__engine = create_engine(db_path, pool_pre_ping=True)
         if getenv("HBNB_ENV") == 'test':
             Base.metadata.drop_all(self.__engine)
@@ -24,19 +30,29 @@ class DBStorage:
         self.__session = scoped_session(sessionmaker(bind=self.__engine,
                                         expire_on_commit=False))
 
+        def classes(self):
+            """Return dict of classes"""
+            return {
+                    "BaseModel": BaseModel,
+                    "City": City,
+                    "Place": Place,
+                    "Amenity": Amenity,
+                    "State": State,
+                    "User": User,
+                    "Review": Review
+                    }
+
     def all(self, cls=None):
         """Public method that returns dictionary of objects"""
-        objects_dict = {}
         if cls:
-            objects = self.__session.query(cls).all()
+            objects = self.__session.query(self.classes()[cls])
         else:
-            classes = [User, State, City, Amenity, Place, Review]
             objects = []
             for c in classes:
-                objects.extend(self.__session.query(c).all())
+                objects.extends(self.__session.query(c).all())
         for obj in objects:
             key = "{}.{}".format(type(obj).__name__, obj.id)
-            objects_dict[key] = obj
+            objects[key] = obj
         return objects_dict
 
     def new(self, obj):
@@ -50,15 +66,15 @@ class DBStorage:
     def deleete(self, obj=None):
         """Delete obj if exists"""
         if obj:
-            self.__session.delte(obj)
+            self.__session.delete(obj)
 
     def reload(self):
         """Reload the session """
         Base.metadata.create_all(self.__engine)
         Session = scoped_session(sessionmaker(bind=self.__engine,
-                                 expire_on_comit=False))
+                                 expire_on_commit=False))
         self.__session = Session()
 
     def close(self):
         """ Call remove() on the __session """
-        self.__session.remove()
+        self.__session.close()
