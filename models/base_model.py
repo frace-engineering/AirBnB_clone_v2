@@ -28,7 +28,7 @@ class BaseModel:
                                                      '%Y-%m-%dT%H:%M:%S.%f')
             kwargs['created_at'] = datetime.strptime(kwargs['created_at'],
                                                      '%Y-%m-%dT%H:%M:%S.%f')
-            if 'id' not in kwargs.key():
+            if 'id' not in kwargs.keys():
                 kwargs['id'] = str(uuid.uuid())
             if hasattr(kwargs, '__class__'):
                 #del kwargs['__class__']
@@ -55,7 +55,7 @@ class BaseModel:
                           (str(type(self)).split('.')[-1]).split('\'')[0]})
         dictionary['created_at'] = self.created_at.isoformat()
         dictionary['updated_at'] = self.updated_at.isoformat()
-        if '_sa_instance_state' in dictionary.key():
+        if '_sa_instance_state' in dictionary.keys():
             del dictionary['_sa_instance_state']
         return dictionary
 

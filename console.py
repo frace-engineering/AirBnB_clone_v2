@@ -137,6 +137,7 @@ class HBNBCommand(cmd.Cmd):
                     continue
                 key, value = match.group(1), match.group(2)
                 cast = None
+            
                 if not re.search('^".*"$', value):
                     if '.' in value:
                         cast = float
@@ -145,11 +146,15 @@ class HBNBCommand(cmd.Cmd):
                 else:
                     value = value.replace('"', '')
                     value = value.replace('_', ' ')
-                if cast:
-                    try:
-                        value = cast(value)
-                    except ValueError:
-                        pass
+                #value = value.replace('"', '')
+                #value = value.replace('_', ' ')
+                try:
+                    if '.' in value:
+                        value = float(value)
+                    else:
+                        value = int(value)
+                except ValueError:
+                    pass
                 setattr(new_instance, key, value)
             storage.new(new_instance)
             #print(new_instance.id)
