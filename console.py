@@ -131,23 +131,21 @@ class HBNBCommand(cmd.Cmd):
             new_instance = HBNBCommand.classes[class_name]()
             for i in range(1, len(cmdline_args)):
                 key_value = cmdline_args[i]
-                pattern = r'^(\S+)\=(\S+)'
+                pattern = r'^(\S+)\=(\".*?\"|\S+)'
+                #pattern = r'^(\S+)\=(\S+)'
                 match = re.search(pattern, key_value)
                 if not match:
                     continue
                 key, value = match.group(1), match.group(2)
                 cast = None
             
-                if not re.search('^".*"$', value):
-                    if '.' in value:
-                        cast = float
-                    else:
-                        cast = int
-                else:
-                    value = value.replace('"', '\"')
-                    value = value.replace('_', ' ')
-                #value = value.replace('"', '')
-                #value = value.replace('_', ' ')
+                #if not re.search('^".*"$', value):
+                #    if '.' in value:
+                #        cast = float
+                #    else:
+                #        cast = int
+                value = value.replace('"', '')
+                value = value.replace('_', ' ')
                 try:
                     if '.' in value:
                         value = float(value)

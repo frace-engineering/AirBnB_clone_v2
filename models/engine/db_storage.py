@@ -40,9 +40,9 @@ class DBStorage:
             objects = []
             for c in classes:
                 objects.extend(self.__session.query(c).all())
-        for obj in objects:
-            key = "{}.{}".format(type(obj).__name__, obj.id)
-            objects_dict[key] = obj
+        for objs in objects:
+            key = "{}.{}".format(type(objs).__name__, objs.id)
+            objects_dict[key] = objs
         return objects_dict
 
     def new(self, obj):
@@ -53,7 +53,7 @@ class DBStorage:
         """Commit all changes to the current database """
         self.__session.commit()
 
-    def deleete(self, obj=None):
+    def delete(self, obj=None):
         """Delete obj if exists"""
         if obj:
             self.__session.delete(obj)

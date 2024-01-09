@@ -10,9 +10,9 @@ import models
 
 class State(BaseModel, Base):
     """ State class """
+
     __tablename__ = 'states'
     name = Column(String(128), nullable=False)
-
     if getenv('HBNB_TYPE_STORAGE') == 'db':
         cities = relationship('City', backref='state',
                               cascade='all, delete-orphan')
@@ -23,4 +23,4 @@ class State(BaseModel, Base):
             from models import storage
             city_objs = storage.all(City).values()
             return [city for city in city_objs if
-                    city.state_id == self.id]
+                    self.id == city.state_id]
